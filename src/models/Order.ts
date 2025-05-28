@@ -17,6 +17,8 @@ const OrderSchema = new mongoose.Schema({
   ],
   total: { type: Number, required: true },
   createdAt: { type: Date, default: Date.now },
+  done: { type: Boolean, default: false },
+  note: { type: String, default: "" },
 }, { timestamps: true });
 
 export default mongoose.models.Order || mongoose.model('Order', OrderSchema);

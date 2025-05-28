@@ -5,13 +5,22 @@ import AdminNav from "../AdminNav";
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState([]);
+  const [noteInputs, setNoteInputs] = useState<{ [key: string]: string }>({});
+
   useEffect(() => {
     fetchOrders();
   }, []);
+
   const fetchOrders = async () => {
     const res = await axios.get("/api/orders");
     setOrders(res.data);
   };
+
+  const handleMarkDone = async (orderId: string, note: string) => {
+    await axios.put(`/api/orders?id=${orderId}`, { done: true, note });
+    fetchOrders();
+  };
+
   return (
     <div className="max-w-4xl mx-auto py-10 px-4">
       <AdminNav />
@@ -35,6 +44,27 @@ export default function AdminOrdersPage() {
                 </li>
               ))}
             </ul>
+            {!order.done && (
+              <div className="mb-2 flex items-center gap-2">
+                <input
+                  type="text"
+                  placeholder="Add note..."
+                  className="input input-bordered input-sm flex-1"
+                  value={noteInputs[order._id] || order.note || ""}
+                  onChange={e => setNoteInputs({ ...noteInputs, [order._id]: e.target.value })}
+                />
+                <button
+                  className="btn btn-success btn-sm"
+                  onClick={() => handleMarkDone(order._id, noteInputs[order._id] || "")}
+                >
+                  Mark Done
+                </button>
+              </div>
+            )}
+            {order.done && <div className="badge badge-success">Completed</div>}
+            {order.note && (
+              <div className="mb-2 text-sm text-blue-700">Note: {order.note}</div>
+            )}
             <div className="text-xs text-gray-500">
               {new Date(order.createdAt).toLocaleString()}
             </div>
