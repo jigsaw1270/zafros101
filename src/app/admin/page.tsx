@@ -5,6 +5,7 @@ import axios from "axios";
 
 export default function AdminPage() {
   const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [form, setForm] = useState({
     name: "",
     price: "",
@@ -15,11 +16,17 @@ export default function AdminPage() {
 
   useEffect(() => {
     fetchProducts();
+    fetchOrders();
   }, []);
 
   const fetchProducts = async () => {
     const res = await axios.get("/api/products");
     setProducts(res.data);
+  };
+
+  const fetchOrders = async () => {
+    const res = await axios.get("/api/orders");
+    setOrders(res.data);
   };
 
   const handleChange = (
@@ -122,6 +129,33 @@ export default function AdminPage() {
                 <span className="text-lg font-semibold">৳{product.price}</span>
                 <span className="badge badge-outline">{product.category}</span>
               </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h2 className="text-2xl font-bold mt-12 mb-4">Orders</h2>
+      <div className="space-y-4">
+        {orders.length === 0 && <div>No orders yet.</div>}
+        {orders.map((order: any) => (
+          <div key={order._id} className="card bg-base-100 shadow p-4">
+            <div className="mb-2 font-semibold">
+              {order.customer.name} ({order.customer.email})
+            </div>
+            <div className="mb-2">Address: {order.customer.address}</div>
+            <div className="mb-2">
+              Total:{" "}
+              <span className="font-bold">৳{order.total}</span>
+            </div>
+            <ul className="mb-2">
+              {order.items.map((item: any) => (
+                <li key={item.id}>
+                  {item.name} x {item.quantity} (৳{item.price})
+                </li>
+              ))}
+            </ul>
+            <div className="text-xs text-gray-500">
+              {new Date(order.createdAt).toLocaleString()}
             </div>
           </div>
         ))}
