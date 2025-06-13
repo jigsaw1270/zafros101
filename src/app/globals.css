@@ -1,2 +1,17 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+
+@font-face {
+  font-family: 'Zodiak';
+  src: url('/fonts/Zodiak-Variable.ttf') format('truetype');
+  font-weight: 100 900; /* Range for variable font */
+  font-stretch: 75% 125%; /* Optional, if your font supports width axis */
+  font-display: swap;
+}
+
+
+.hero-title {
+  font-family: 'Zodiak', serif;
+  font-weight: 900;
+}
