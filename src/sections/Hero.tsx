@@ -1,6 +1,8 @@
+'use client';
 import CircularText from "@/app/components/circulartext/CircularText";
 import GlitchText from "@/app/components/GlitchText";
 import GradientText from "@/app/components/GradientText";
+import ScrollVelocity from "@/app/components/scrollvelocity/ScrollVelocity";
 import Silk from "@/app/components/Silk";
 
 
