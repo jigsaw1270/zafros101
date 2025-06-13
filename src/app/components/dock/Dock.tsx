@@ -17,6 +17,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { Home, ShoppingCart, Package, Settings } from "lucide-react";
 
 import "./Dock.css";
 
@@ -95,7 +96,7 @@ function DockItem({
       aria-haspopup="true"
     >
       {Children.map(children, (child) =>
-        cloneElement(child as React.ReactElement, { isHovered })
+        React.isValidElement(child) ? cloneElement(child, {}) : child
       )}
     </motion.div>
   );
@@ -111,10 +112,12 @@ function DockLabel({ children, className = "", ...rest }: DockLabelProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = isHovered.on("change", (latest) => {
-      setIsVisible(latest === 1);
-    });
-    return () => unsubscribe();
+    if (isHovered && typeof isHovered.on === "function") {
+      const unsubscribe = isHovered.on("change", (latest) => {
+        setIsVisible(latest === 1);
+      });
+      return () => unsubscribe();
+    }
   }, [isHovered]);
 
   return (
@@ -146,7 +149,12 @@ function DockIcon({ children, className = "" }: DockIconProps) {
 }
 
 export default function Dock({
-  items,
+  items = [
+    { icon: <Home />, label: "Home", onClick: () => console.log("Home clicked") },
+    { icon: <ShoppingCart />, label: "Cart", onClick: () => console.log("Cart clicked") },
+    { icon: <Package />, label: "Products", onClick: () => console.log("Products clicked") },
+    { icon: <Settings />, label: "Admin", onClick: () => console.log("Admin clicked") },
+  ],
   className = "",
   spring = { mass: 0.1, stiffness: 150, damping: 12 },
   magnification = 70,
@@ -167,7 +175,7 @@ export default function Dock({
 
   return (
     <motion.div
-      style={{ height, scrollbarWidth: "none" }}
+      style={{ height, scrollbarWidth: "none", position: "sticky", bottom: 0 }}
       className="dock-outer"
     >
       <motion.div
